@@ -75,3 +75,11 @@ def get_history():
     predictions = db.query(Prediction).all()
     db.close()
     return predictions
+
+@app.delete("/history")
+def clear_history():
+    db = SessionLocal()
+    db.query(Prediction).delete()
+    db.commit()
+    db.close()
+    return {"message": "Histórico apagado com sucesso"}

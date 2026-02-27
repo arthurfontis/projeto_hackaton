@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import axios from "axios";
-
 import {
   Chart as ChartJS,
   LineElement,
@@ -11,8 +10,8 @@ import {
   Tooltip,
   Legend
 } from "chart.js";
-
 import { Line } from "react-chartjs-2";
+import "./App.css";
 
 ChartJS.register(
   LineElement,
@@ -25,7 +24,6 @@ ChartJS.register(
 );
 
 function App() {
-
   const [formData, setFormData] = useState({
     temperature: "",
     vibration: "",
@@ -47,142 +45,127 @@ function App() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    try {
-      const response = await axios.post(
-        "http://127.0.0.1:8000/predict",
-        formData
-      );
-      setResult(response.data);
-    } catch (error) {
-      console.error("Erro ao prever:", error);
-    }
+    const response = await axios.post(
+      "http://127.0.0.1:8000/predict",
+      formData
+    );
+
+    setResult(response.data);
+    getHistory();
   };
 
   const getHistory = async () => {
-    try {
-      const response = await axios.get("http://127.0.0.1:8000/history");
-      setHistory(response.data);
-    } catch (error) {
-      console.error("Erro ao buscar histórico:", error);
-    }
+    const response = await axios.get("http://127.0.0.1:8000/history");
+    setHistory(response.data);
+  };
+
+  const clearHistory = async () => {
+    await axios.delete("http://127.0.0.1:8000/history");
+    setHistory([]);
   };
 
   const chartData = {
-    labels: history.map((item, index) => `Predição ${index + 1}`),
+    labels: history.map((item, index) => `#${index + 1}`),
     datasets: [
       {
         label: "Probabilidade de Falha (%)",
         data: history.map(item => item.probability * 100),
-        borderColor: "red",
-        fill: false
+        borderColor: "#ff4d4d",
+        backgroundColor: "rgba(255,77,77,0.2)",
+        tension: 0.4,
+        pointRadius: 4
       }
     ]
   };
 
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        labels: { color: "#fff" }
+      }
+    },
+    scales: {
+      x: {
+        ticks: { color: "#ccc" },
+        grid: { color: "#333" }
+      },
+      y: {
+        ticks: { color: "#ccc" },
+        grid: { color: "#333" },
+        min: 0,
+        max: 100
+      }
+    }
+  };
+
   return (
-    <div className="container mt-5">
-      <h2 className="mb-4">Sistema de Manutenção Preditiva</h2>
+    <div className="main-wrapper">
+      <div className="dashboard">
 
-      <form onSubmit={handleSubmit}>
+        <h2 className="title">
+          🔧 Sistema de Manutenção Preditiva
+        </h2>
 
-        <input
-          className="form-control mb-3"
-          type="float"
-          name="temperature"
-          placeholder="Temperatura (°C)"
-          onChange={handleChange}
-          required
-        />
+        <div className="card">
+          <form onSubmit={handleSubmit}>
 
-        <input
-          className="form-control mb-3"
-          type="float"
-          name="vibration"
-          placeholder="Vibração (mm/s)"
-          onChange={handleChange}
-          required
-        />
+            <div className="grid-inputs">
 
-        <input
-          className="form-control mb-3"
-          type="float"
-          name="current"
-          placeholder="Corrente (A)"
-          onChange={handleChange}
-          required
-        />
+              <input type="float" step="any" name="temperature" placeholder="Temperatura (°C)" onChange={handleChange} required />
+              <input type="float" step="any" name="vibration" placeholder="Vibração (mm/s)" onChange={handleChange} required />
+              <input type="float" step="any" name="current" placeholder="Corrente (A)" onChange={handleChange} required />
+              <input type="float" step="any" name="voltage" placeholder="Tensão (V)" onChange={handleChange} required />
+              <input type="float" step="any" name="hours" placeholder="Horas de Operação" onChange={handleChange} required />
 
-        <input
-          className="form-control mb-3"
-          type="float"
-          name="voltage"
-          placeholder="Tensão (V)"
-          onChange={handleChange}
-          required
-        />
+            </div>
 
-        <input
-          className="form-control mb-3"
-          type="float"
-          name="hours"
-          placeholder="Horas de Operação"
-          onChange={handleChange}
-          required
-        />
+            <button className="btn-primary">
+              Prever Falha
+            </button>
 
-        <button className="btn btn-primary">
-          Prever Falha
-        </button>
+          </form>
+        </div>
 
-      </form>
+        {result && (
+          <div className="card result-card">
+            <h4>Status do Motor</h4>
 
-      <button
-        className="btn btn-secondary mt-3"
-        onClick={getHistory}
-      >
-        Ver Histórico
-      </button>
-
-      {result && (
-        <div className="mt-4 alert alert-info">
-          <h4>Resultado:</h4>
-
-          <p>
-            <strong>Risco:</strong>{" "}
-            <span className={
-              result.risk === "Alto"
-                ? "text-danger"
-                : "text-success"
-            }>
+            <h2 style={{ color: result.risk === "Alto" ? "#ff4d4d" : "#28a745" }}>
               {result.risk}
-            </span>
-          </p>
+            </h2>
 
-          <p>
-            <strong>Probabilidade:</strong>{" "}
-            {(result.probability * 100).toFixed(2)}%
-          </p>
-
-          <div className="progress">
-            <div
-              className="progress-bar"
-              role="progressbar"
-              style={{ width: `${result.probability * 100}%` }}
-            >
-              {(result.probability * 100).toFixed(2)}%
+            <div className="progress-bar-container">
+              <div
+                className="progress-bar-fill"
+                style={{
+                  width: `${result.probability * 100}%`,
+                  backgroundColor: result.risk === "Alto" ? "#ff4d4d" : "#28a745"
+                }}
+              >
+                {(result.probability * 100).toFixed(1)}%
+              </div>
             </div>
           </div>
+        )}
 
-        </div>
-      )}
+        {history.length > 0 && (
+          <div className="card">
+            <div className="history-header">
+              <h5>Histórico de Predições</h5>
+              <button className="btn-danger" onClick={clearHistory}>
+                Limpar Histórico
+              </button>
+            </div>
 
-      {history.length > 0 && (
-        <div className="mt-4">
-          <h4>Histórico de Probabilidade</h4>
-          <Line data={chartData} />
-        </div>
-      )}
+            <div className="chart-container">
+              <Line data={chartData} options={chartOptions} />
+            </div>
+          </div>
+        )}
 
+      </div>
     </div>
   );
 }
