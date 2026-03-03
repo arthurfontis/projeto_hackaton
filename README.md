@@ -1,0 +1,189 @@
+# 🔧 Sistema de Manutenção Preditiva com Inteligência Artificial
+
+Projeto desenvolvido para o Hackathon InovSpin.
+
+Este sistema utiliza Machine Learning para prever falhas em motores elétricos industriais com base em variáveis operacionais como temperatura, vibração, corrente elétrica, tensão e horas de operação.
+
+---
+
+# 📌 Problema
+
+Motores elétricos industriais são essenciais em processos produtivos. Falhas inesperadas podem causar:
+
+- Paradas não programadas
+- Altos custos de manutenção
+- Danos a equipamentos
+- Redução da vida útil dos ativos
+
+A manutenção tradicional (corretiva ou preventiva por tempo) não considera o estado real do motor.
+
+---
+
+# 💡 Solução
+
+Foi desenvolvida uma aplicação Full Stack que:
+
+- Recebe dados operacionais do motor
+- Aplica um modelo de Machine Learning
+- Calcula a probabilidade de falha
+- Classifica o risco (Baixo ou Alto)
+- Armazena histórico das predições
+- Exibe gráfico evolutivo
+- Permite limpar histórico
+
+A solução permite tomada de decisão baseada em dados.
+
+---
+
+# 🧠 Como a IA Funciona
+
+O modelo foi treinado com dados históricos simulados contendo:
+
+- Temperatura
+- Vibração
+- Corrente
+- Tensão
+- Horas de operação
+- Indicador de falha (0 ou 1)
+
+Algoritmo utilizado:
+
+Random Forest Classifier (Scikit-Learn)
+
+O modelo aprende padrões que indicam falha.  
+Ao receber novos dados, ele retorna:
+
+- Classificação (Alto ou Baixo risco)
+- Probabilidade percentual de falha
+
+---
+
+# 🏗 Arquitetura
+
+Frontend:
+- React
+- Bootstrap
+- Chart.js
+
+Backend:
+- FastAPI
+- SQLAlchemy
+- SQLite
+- Pandas
+- Scikit-Learn
+- Joblib
+
+Fluxo da aplicação:
+
+Usuário → React → FastAPI → Modelo IA → Banco SQLite → Resposta → Dashboard
+
+---
+
+# 📁 Organização do Projeto
+
+O projeto é dividido em duas partes principais:
+
+Backend:
+- main.py (API principal)
+- train_model.py (treinamento do modelo)
+- models.py (estrutura do banco de dados)
+- database.py (configuração do banco)
+- model.pkl (gerado após treinamento)
+- motor.db (banco SQLite)
+- venv (ambiente virtual, não versionado)
+
+Frontend:
+- App.js (interface principal)
+- App.css (estilização)
+- Dependências Node
+
+---
+
+# ⚙️ Pré-requisitos
+
+Antes de executar o projeto, instale:
+
+- Python 3.10 ou superior
+- Node.js 18 ou superior
+- Git
+
+Verificar Python:
+
+```bash
+py --version
+🚀 Como Executar o Projeto Completo
+🔹 1. Clonar o repositório
+git clone LINK_DO_REPOSITORIO
+cd projeto_hackaton
+📦 Executando o Backend
+2. Entrar na pasta backend
+cd backend
+3. Criar ambiente virtual
+py -m venv venv
+4. Ativar ambiente virtual (Windows)
+venv\Scripts\activate
+Se aparecer (venv) no início do terminal, está ativado.
+
+5. Instalar dependências
+pip install fastapi uvicorn pandas scikit-learn sqlalchemy joblib
+6. Treinar o modelo
+py train_model.py
+Isso irá gerar o arquivo model.pkl.
+
+7. Rodar a API
+uvicorn main:app --reload
+A API ficará disponível em:
+
+http://127.0.0.1:8000
+
+💻 Executando o Frontend
+Abra outro terminal.
+
+8. Entrar na pasta frontend
+cd frontend
+9. Instalar dependências
+npm install
+10. Iniciar aplicação
+npm start
+A aplicação abrirá em:
+
+http://localhost:3000
+
+📊 Funcionalidades
+Inserção de dados do motor
+
+Predição em tempo real
+
+Probabilidade percentual
+
+Barra de progresso dinâmica
+
+Histórico salvo em banco SQLite
+
+Gráfico evolutivo das predições
+
+Botão para limpar histórico
+
+🧪 Ambiente Testado
+Windows 11
+
+Python 3.11
+
+Node.js 18
+
+📈 Possíveis Melhorias Futuras
+Integração com sensores IoT reais
+
+Deploy em nuvem
+
+Dashboard para múltiplos motores
+
+Modelo treinado com dados industriais reais
+
+Sistema automático de alertas
+
+👨🏻‍💻 Desenvolvedor
+Arthur Carvalho Fontinele
+Engenharia Mecatrônica
+
+Projeto desenvolvido para o Hackathon InovSpin
