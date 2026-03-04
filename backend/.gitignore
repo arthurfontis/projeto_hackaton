@@ -1,1 +1,5 @@
-/model.pkl
+venv/
+__pycache__/
+model.pkl
+motor.db
+*.db
