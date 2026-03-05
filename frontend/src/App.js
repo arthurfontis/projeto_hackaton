@@ -105,7 +105,7 @@ function App() {
       <div className="dashboard">
 
         <h2 className="title">
-          🔧 Sistema de Manutenção Preditiva
+          Sistema de Manutenção Preditiva
         </h2>
 
         <div className="card">
